@@ -35,11 +35,12 @@ class Tissue(plugins.Plugin):
     def begin(self):
         self.messages = []
 
-    def beforeImport(self, element_path, module):
-        if element_path.endswith(".py"):
-            pep8.input_file(element_path)
-        else:
-            pep8.input_dir(element_path)
+    def beforeDirectory(self, path):
+        pep8.input_dir(path)
+
+    def beforeImport(self, filename, module):
+        if filename.endswith(".py"):
+            pep8.input_file(filename)
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
