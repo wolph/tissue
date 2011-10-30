@@ -136,5 +136,3 @@ class Tissue(plugins.Plugin):
                 else:
                     return True
         return None
-
-
