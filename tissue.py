@@ -31,7 +31,7 @@ class Tissue(plugins.Plugin):
         self.tissue_statistics = options.tissue_statistics
         if options.tissue_packages:
             for pkgs in [util.tolist(x) for x in options.tissue_packages]:
-                self.tissue_packages.exted(pkgs)
+                self.tissue_packages.extend(pkgs)
         self.tissue_inclusive = options.tissue_inclusive
         if self.tissue_packages:
             log.info("PEP8 report will include only packages: %s",
