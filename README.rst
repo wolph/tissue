@@ -34,6 +34,8 @@ following options are availible:
     --tissue-show-pep8    Show text of PEP 8 for each error
                           [NOSE_TISSUE_SHOW_TISSUE]
     --tissue-statistics   Count errors and warnings [NOSE_TISSUE_STATISTICS]
+    --tissue-color        Show errors and warnings using colors
+                          [NOSE_TISSUE_COLOR]
 
 Options map to the pep8 options of the same name (sans prefix)
 
