@@ -94,40 +94,40 @@ class Tissue(plugins.Plugin):
                           dest="pep8_inclusive",
                           default=env.get("NOSE_pep8_INCLUSIVE"),
                           help="Include all python files under working "
-                               "directory in pep8 run."
+                               "directory in pep8 run. "
                                "[NOSE_PEP8_INCLUSIVE]")
         parser.add_option("--pep8-repeat", action="store_true",
                           default=env.get("NOSE_PEP8_REPEAT"),
                           metavar="ERRORS",
                           dest="pep8_repeat",
-                          help="Show all occurrences of the same error"
+                          help="Show all occurrences of the same error "
                                "[NOSE_PEP8_REPEAT]")
         parser.add_option("--pep8-select",
                           default=env.get("NOSE_PEP8_SELECT"),
                           metavar="ERRORS",
                           dest="pep8_select",
-                          help="Select errors and warnings (e.g. E,W6)"
+                          help="Select errors and warnings (e.g. E,W6) "
                                "[NOSE_PEP8_SELECT]")
         parser.add_option("--pep8-ignore",
                           default=env.get("NOSE_PEP8_ignore"),
                           metavar="ERRORS",
                           dest="pep8_ignore",
-                          help="Skip errors and warnings (e.g. E,W6)"
+                          help="Skip errors and warnings (e.g. E,W6) "
                                "[NOSE_PEP8_IGNORE]")
         parser.add_option("--pep8-show-source", action="store_true",
                           dest="pep8_show_source",
                           default=env.get("NOSE_PEP8_SHOW_SOURCE"),
-                          help="Show source code for each error"
+                          help="Show source code for each error "
                                "[NOSE_PEP8_SHOW_SOURCE]")
         parser.add_option("--pep8-show-pep8", action="store_true",
                           dest="pep8_show_pep8",
                           default=env.get("NOSE_PEP8_SHOW_PEP8"),
-                          help="Show text of PEP 8 for each error"
+                          help="Show text of PEP 8 for each error "
                                "[NOSE_PEP8_SHOW_PEP8]")
         parser.add_option("--pep8-statistics", action="store_true",
                           dest="pep8_statistics",
                           default=env.get("NOSE_PEP8_STATISTICS"),
-                          help="Count errors and warnings"
+                          help="Count errors and warnings "
                                "[NOSE_PEP8_STATISTICS]")
 
     def report(self, stream):
