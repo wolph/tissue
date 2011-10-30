@@ -22,7 +22,7 @@ class Tissue(plugins.Plugin):
 
     def beforeImport(self, filename, module):
         if filename.endswith(".py"):
-            self.input_file(filename)
+            pep8.input_file(filename)
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
@@ -42,8 +42,6 @@ class Tissue(plugins.Plugin):
             self.messages.append(text)
 
         pep8.message = message
-        self.get_statistics = pep8.get_statistics
-        self.input_file = pep8.input_file
 
         # NOTE(jkoelker) Urgh! Really? Global options? At least there is a
         #                function that takes the arglist ;(
@@ -123,7 +121,7 @@ class Tissue(plugins.Plugin):
         output = '\n'.join(self.messages)
         stream.write(output + '\n')
         if self.tissue_statistics:
-            stats = '\n'.join(self.get_statistics())
+            stats = '\n'.join(pep8.get_statistics())
             stream.write(stats + '\n')
 
     def wantFile(self, file, package=None):
