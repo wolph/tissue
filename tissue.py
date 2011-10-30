@@ -53,11 +53,11 @@ class Tissue(plugins.Plugin):
 
         if options.tissue_select:
             arglist.append("--select")
-            arglist.append(options.select)
+            arglist.append(options.tissue_select)
 
         if options.tissue_ignore:
             arglist.append("--ignore")
-            arglist.append(options.ignore)
+            arglist.append(options.tissue_ignore)
 
         if options.tissue_show_source:
             arglist.append("--show-source")
