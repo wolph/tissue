@@ -21,7 +21,8 @@ class Tissue(plugins.Plugin):
         self.messages = []
 
     def beforeImport(self, filename, module):
-        self.input_file(filename)
+        if filename.endswith(".py"):
+            self.input_file(filename)
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
@@ -118,14 +119,15 @@ class Tissue(plugins.Plugin):
                                "[NOSE_TISSUE_STATISTICS]")
 
     def report(self, stream):
+        stream.write('\n' + "PEP8:" + '\n')
         output = '\n'.join(self.messages)
-        stream.write('\n' + output + '\n')
+        stream.write(output + '\n')
         if self.tissue_statistics:
             stats = '\n'.join(self.get_statistics())
             stream.write(stats + '\n')
 
     def wantFile(self, file, package=None):
-        if self.inclusive:
+        if self.tissue_inclusive:
             if file.endswith(".py"):
                 if package and self.tissue_packages:
                     for want in self.tissue_packages:
