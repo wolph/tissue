@@ -2,6 +2,7 @@
 PEP8 automated checker for nose. Based on coverage plugin
 """
 import logging
+import os
 
 import pep8
 
@@ -10,6 +11,20 @@ from nose import util
 
 
 log = logging.getLogger("nose.plugins.tissue")
+
+
+# thanks pinocchio nose plugin for this code
+color_end = "\x1b[1;0m"
+colors = dict(green="\x1b[1;32m", red="\x1b[1;31m", yellow="\x1b[1;33m")
+
+
+def in_color(color, text):
+    """
+    Colorize text, adding color to each line so that the color shows up
+    correctly with the less -R as well as more and normal shell.
+    """
+    return "".join("%s%s%s" % (colors[color], line, color_end)
+                            for line in text.splitlines(True))
 
 
 class Tissue(plugins.Plugin):
@@ -41,6 +56,20 @@ class Tissue(plugins.Plugin):
 
         # NOTE(jkoelker) Monkey-patch pep8 to not print directly
         def message(text):
+            # if the output has a filename, then it should be colored if
+            # the tissue_color option is used
+            if ':' in text and os.path.exists(text.split(':')[0]):
+                if options.tissue_color:
+                    if 'E' in text.split(':')[-1]:
+                        text = in_color('red', text)
+                    else:
+                        text = in_color('yellow', text)
+
+                # if using the tissue_show_source or tissue_show_pep8, it
+                # should separate the filename from the information
+                if options.tissue_show_pep8 or options.tissue_show_source:
+                    text = "\n%s\n" % text
+
             self.messages.append(text)
 
         pep8.message = message
@@ -117,6 +146,11 @@ class Tissue(plugins.Plugin):
                           default=env.get("NOSE_TISSUE_STATISTICS"),
                           help="Count errors and warnings "
                                "[NOSE_TISSUE_STATISTICS]")
+        parser.add_option("--tissue-color", action="store_true",
+                          dest="tissue_color",
+                          default=env.get("NOSE_TISSUE_COLOR"),
+                          help="Show errors and warnings using colors "
+                               "[NOSE_TISSUE_COLOR]")
 
     def report(self, stream):
         if not self.messages:
