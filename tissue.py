@@ -117,6 +117,8 @@ class Tissue(plugins.Plugin):
                                "[NOSE_TISSUE_STATISTICS]")
 
     def report(self, stream):
+        if not self.messages:
+            return
         stream.write('\n' + "PEP8:" + '\n')
         output = '\n'.join(self.messages)
         stream.write(output + '\n')
