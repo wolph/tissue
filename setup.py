@@ -5,10 +5,9 @@ version = "0.1"
 setup(name="tissue",
       version=version,
       description="Tissue - automated pep8 checker for nose",
-      long_description="""\
-""",
+      long_description=open("README").read(),
       classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      keywords="",
+      keywords="pep8 nose",
       author="Jason K\xc3\xb6lker",
       author_email="jason@koelker.net",
       url="https://github.com/jkoelker/tissue",
