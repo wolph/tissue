@@ -3,6 +3,8 @@ PEP8 automated checker for nose. Based on coverage plugin
 """
 import logging
 
+import pep8
+
 from nose import plugins
 from nose import util
 
@@ -23,14 +25,6 @@ class Tissue(plugins.Plugin):
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
-        if self.enabled:
-            try:
-                import pep8
-            except ImportError:
-                log.error("PEP8 not availible: "
-                          "unable to import pep8 module")
-                self.enabled = False
-                return
         self.conf = config
         self.tissue_packages = []
         self.tissue_statistics = options.tissue_statistics
@@ -69,6 +63,9 @@ class Tissue(plugins.Plugin):
 
         if options.tissue_show_pep8:
             arglist.append("--show-pep8")
+
+        # NOTE(jkoelker) PEP8 requires something to be left over in args
+        arglist.append("hozer")
 
         tissue_options, tissue_args = pep8.process_options(arglist)
 
