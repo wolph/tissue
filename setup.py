@@ -1,12 +1,12 @@
 from setuptools import setup
 
-version = "0.3"
+version = "0.4"
 
 setup(name="tissue",
       version=version,
       description="Tissue - automated pep8 checker for nose",
       long_description=open("README.rst").read(),
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[],  # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords="pep8 nose",
       author="Jason K\xc3\xb6lker",
       author_email="jason@koelker.net",
