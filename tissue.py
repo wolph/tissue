@@ -116,7 +116,7 @@ class Tissue(plugins.Plugin):
                                "[NOSE_TISSUE_PACKAGE]")
         parser.add_option("--tissue-inclusive", action="store_true",
                           dest="tissue_inclusive",
-                          default=env.get("NOSE_tissue_INCLUSIVE"),
+                          default=env.get("NOSE_TISSUE_INCLUSIVE"),
                           help="Include all python files under working "
                                "directory in pep8 run. "
                                "[NOSE_TISSUE_INCLUSIVE]")
