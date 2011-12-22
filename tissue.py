@@ -59,7 +59,7 @@ class Tissue(plugins.Plugin):
         self.tissue_inclusive = options.tissue_inclusive
         if self.tissue_packages:
             log.info("PEP8 report will include only packages: %s",
-                     self.coverPackages)
+                     self.tissue_packages)
 
         # NOTE(jkoelker) Monkey-patch pep8 to not print directly
         def message(text):
