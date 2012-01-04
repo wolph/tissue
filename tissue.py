@@ -77,6 +77,11 @@ class Tissue(plugins.Plugin):
                 if options.tissue_show_pep8 or options.tissue_show_source:
                     text = "\n%s\n" % text
 
+                if options.tissue_pylint_compat:
+                    text_list = text.split(' ')
+                    text_list[1] = "[%s]" % text_list[1]
+                    text = ' '.join(text_list)
+
             self.messages.append(text)
 
         pep8.message = message
@@ -158,6 +163,11 @@ class Tissue(plugins.Plugin):
                           default=env.get("NOSE_TISSUE_COLOR"),
                           help="Show errors and warnings using colors "
                                "[NOSE_TISSUE_COLOR]")
+        parser.add_option("--tissue-pylint-compat", action="store_true",
+                          dest="tissue_pylint_compat",
+                          default=env.get("NOSE_TISSUE_PYLINT_COMPAT"),
+                          help="Wrap error codes in square brackets"
+                               "[NOSE_TISSUE_PYLINK_COMPAT]")
 
     def report(self, stream):
         if not self.messages:
