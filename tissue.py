@@ -34,19 +34,34 @@ class Tissue(plugins.Plugin):
 
     def begin(self):
         self.messages = []
-        self.seen = []
+        self.seen_files = []
+
+    def seen(self, filename):
+        if filename not in self.seen_files:
+            self.seen_files.append(filename)
+            return False
+        return True
+
+    def want_file(self, filename):
+        if self.tissue_packages:
+            file_pkg = util.getpackage(filename)
+            for package in self.tissue_packages:
+                if package in file_pkg and not self.seen(filename):
+                    return True
+        else:
+            if not self.seen(filename):
+                return True
+        return False
 
     def beforeDirectory(self, path):
         def seen_runner(filename):
-            if filename not in self.seen:
+            if self.want_file(filename):
                 pep8.input_file(filename)
-                self.seen.append(filename)
         pep8.input_dir(path, runner=seen_runner)
 
     def beforeImport(self, filename, module):
-        if filename.endswith(".py") and filename not in self.seen:
+        if filename.endswith(".py") and self.want_file(filename):
             pep8.input_file(filename)
-            self.seen.append(filename)
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
