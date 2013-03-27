@@ -3,6 +3,7 @@ PEP8 automated checker for nose. Based on coverage plugin
 """
 import logging
 import os
+import sys
 
 import pep8
 
@@ -25,6 +26,30 @@ def in_color(color, text):
     """
     return "".join("%s%s%s" % (colors[color], line, color_end)
                             for line in text.splitlines(True))
+
+
+class TissueReport(pep8.StandardReport):
+    '''pep8's Standard report with a get_file_results that accepts an optional stream arg to output to'''
+
+    def get_file_results(self, stream=sys.stdout):
+        """Write the result to stream and return the overall count for this file."""
+        self._deferred_print.sort()
+        for line_number, offset, code, text, doc in self._deferred_print:
+            stream.write(self._fmt % {
+                'path': self.filename,
+                'row': self.line_offset + line_number, 'col': offset + 1,
+                'code': code, 'text': text,
+            } + '\n')
+            if self._show_source:
+                if line_number > len(self.lines):
+                    line = ''
+                else:
+                    line = self.lines[line_number - 1]
+                stream.write(line.rstrip() + '\n')
+                stream.write(' ' * offset + '^\n')
+            if self._show_pep8 and doc:
+                stream.write(doc.lstrip('\n').rstrip() + '\n')
+        return self.file_errors
 
 
 class Tissue(plugins.Plugin):
@@ -56,12 +81,13 @@ class Tissue(plugins.Plugin):
     def beforeDirectory(self, path):
         def seen_runner(filename):
             if self.want_file(filename):
-                pep8.input_file(filename)
-        pep8.input_dir(path, runner=seen_runner)
+                self.pep8.input_file(filename)
+        self.pep8.runner = seen_runner
+        self.pep8.input_dir(path)
 
     def beforeImport(self, filename, module):
         if filename.endswith(".py") and self.want_file(filename):
-            pep8.input_file(filename)
+            self.pep8.input_file(filename)
 
     def configure(self, options, config):
         plugins.Plugin.configure(self, options, config)
@@ -75,26 +101,6 @@ class Tissue(plugins.Plugin):
         if self.tissue_packages:
             log.info("PEP8 report will include only packages: %s",
                      self.tissue_packages)
-
-        # NOTE(jkoelker) Monkey-patch pep8 to not print directly
-        def message(text):
-            # if the output has a filename, then it should be colored if
-            # the tissue_color option is used
-            if ':' in text and os.path.exists(text.split(':')[0]):
-                if options.tissue_color:
-                    if 'E' in text.split(':')[-1]:
-                        text = in_color('red', text)
-                    else:
-                        text = in_color('yellow', text)
-
-                # if using the tissue_show_source or tissue_show_pep8, it
-                # should separate the filename from the information
-                if options.tissue_show_pep8 or options.tissue_show_source:
-                    text = "\n%s\n" % text
-
-            self.messages.append(text)
-
-        pep8.message = message
 
         # NOTE(jkoelker) Urgh! Really? Global options? At least there is a
         #                function that takes the arglist ;(
@@ -116,10 +122,9 @@ class Tissue(plugins.Plugin):
         if options.tissue_show_pep8:
             arglist.append("--show-pep8")
 
-        # NOTE(jkoelker) PEP8 requires something to be left over in args
-        arglist.append("hozer")
-
-        tissue_options, tissue_args = pep8.process_options(arglist)
+        options, paths = pep8.process_options(arglist)
+        self.pep8 = pep8.StyleGuide(**options.__dict__)
+        self.pep8.init_report(TissueReport)
 
     def options(self, parser, env):
         plugins.Plugin.options(self, parser, env)
@@ -175,13 +180,11 @@ class Tissue(plugins.Plugin):
                                "[NOSE_TISSUE_COLOR]")
 
     def report(self, stream):
-        if not self.messages:
-            return
+        report = self.pep8.check_files()
         stream.write('\n' + "PEP8:" + '\n')
-        output = '\n'.join(self.messages)
-        stream.write(output + '\n')
+        report.get_file_results(stream)
         if self.tissue_statistics:
-            stats = '\n'.join(pep8.get_statistics())
+            stats = '\n'.join(report.get_statistics())
             stream.write(stats + '\n')
 
     def wantFile(self, file, package=None):
