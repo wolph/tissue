@@ -108,7 +108,6 @@ class Tissue(plugins.Plugin):
             log.info('PEP8 report will include only packages: %s',
                      self.tissue_packages)
 
-
         arglist = []
         if options.tissue_repeat:
             arglist.append('--repeat')
