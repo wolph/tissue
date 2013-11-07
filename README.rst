@@ -34,6 +34,9 @@ following options are availible:
     --tissue-show-pep8    Show text of PEP 8 for each error
                           [NOSE_TISSUE_SHOW_TISSUE]
     --tissue-statistics   Count errors and warnings [NOSE_TISSUE_STATISTICS]
+    --tissue-fail-on-error
+                          Fail the tests when Tissue sees errors
+                          [NOSE_TISSUE_ERROR]
     --tissue-color        Show errors and warnings using colors
                           [NOSE_TISSUE_COLOR]
 
@@ -44,4 +47,4 @@ Source
 
 Fork me on teh githubs
 
-https://github.com/jkoelker/tissue
+https://github.com/wolph/tissue
