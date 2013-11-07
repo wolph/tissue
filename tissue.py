@@ -99,6 +99,7 @@ class Tissue(plugins.Plugin):
         self.conf = config
         self.tissue_packages = []
         self.tissue_statistics = options.tissue_statistics
+        self.tissue_fail_on_error = options.tissue_fail_on_error
         if options.tissue_packages:
             for pkgs in [util.tolist(x) for x in options.tissue_packages]:
                 self.tissue_packages.extend(pkgs)
@@ -106,6 +107,7 @@ class Tissue(plugins.Plugin):
         if self.tissue_packages:
             log.info('PEP8 report will include only packages: %s',
                      self.tissue_packages)
+
 
         arglist = []
         if options.tissue_repeat:
@@ -170,6 +172,10 @@ class Tissue(plugins.Plugin):
                           default=env.get('NOSE_TISSUE_STATISTICS'),
                           help='Count errors and warnings '
                                '[NOSE_TISSUE_STATISTICS]')
+        parser.add_option('--tissue-fail-on-error', action='store_true',
+                          default=env.get('NOSE_TISSUE_ERROR'),
+                          help='Fail the tests when Tissue sees errors '
+                               '[NOSE_TISSUE_ERROR]')
         parser.add_option('--tissue-color', action='store_true',
                           default=env.get('NOSE_TISSUE_COLOR'),
                           help='Show errors and warnings using colors '
@@ -182,6 +188,10 @@ class Tissue(plugins.Plugin):
         if self.tissue_statistics:
             stats = '\n'.join(report.get_statistics())
             stream.write(stats + '\n')
+
+        if self.tissue_fail_on_error:
+            log.error('Tissue encountered PEP8 errors')
+            sys.exit(1)
 
     def wantFile(self, file, package=None):
         if self.tissue_inclusive:
