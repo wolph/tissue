@@ -188,7 +188,7 @@ class Tissue(plugins.Plugin):
             stats = '\n'.join(report.get_statistics())
             stream.write(stats + '\n')
 
-        if self.tissue_fail_on_error:
+        if self.tissue_fail_on_error and report.total_errors:
             log.error('Tissue encountered PEP8 errors')
             sys.exit(1)
 
